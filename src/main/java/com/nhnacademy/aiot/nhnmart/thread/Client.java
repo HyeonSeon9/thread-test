@@ -1,0 +1,30 @@
+package com.nhnacademy.aiot.nhnmart.thread;
+
+import com.nhnacademy.aiot.nhnmart.customer.Customer;
+import com.nhnacademy.aiot.nhnmart.customer.CustomerGenerator;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class Client extends Thread{
+
+    private final Channel channel;
+    
+    public Client(Channel channel){
+        this.channel=channel;
+    }
+
+    @Override
+    public void run(){
+        while(true){
+            Customer customer =CustomerGenerator.getCustomerGenerator().next();
+            Request request = new CouponRequest(customer);
+            this.channel.addRequest(request);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                log.error("sleep",e);
+            }
+        }
+    }
+    
+}
